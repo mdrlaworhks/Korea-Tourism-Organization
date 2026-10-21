@@ -1,0 +1,1726 @@
+/* ===== 기본 리셋 ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  word-break: keep-all;
+}
+ul,
+li {
+  list-style: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+/* ===== 폰트 ===== */
+/* 영문·숫자는 Outfit, Outfit에 없는 한글은 자동으로 Noto Sans KR */
+body {
+  font-family: "Outfit", "Noto Sans KR", sans-serif;
+  letter-spacing: -0.02em; /* 원본처럼 살짝 촘촘하게 */
+}
+/* button, input은 글꼴을 물려받지 않아서 따로 지정 */
+button,
+input {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+/* ===== 헤더 ===== */
+header {
+  position: absolute; /* relative → absolute : 비주얼 위에 겹침 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 96px;
+  padding: 0 100px;
+  color: #fff;
+  /* background 삭제 → 투명 */
+}
+header.on {
+  background: #fff; /* 마우스 올리면 흰색 헤더 */
+  color: #333;
+}
+
+/* 로고 */
+.logo a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.logo img {
+  height: 44px;
+}
+
+/* 메인 메뉴 */
+.gnb {
+  display: flex;
+  align-self: stretch; /* 헤더 높이만큼 꽉 채우기 */
+}
+.gnb > li > a {
+  position: relative;
+  display: block;
+  height: 96px;
+  line-height: 96px;
+  padding: 0 36px; /* 이 폭만큼 밑줄이 그어짐 */
+  font-size: 17px;
+  font-weight: 700;
+  transition: 1s;
+}
+header.on .gnb > li.on > a {
+  color: #e0283d; /* 마우스 올린 메뉴는 빨간색 */
+}
+/* 빨간 밑줄: 평소엔 접혀 있음 */
+.gnb > li > a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: #e0283d;
+  transform: scaleX(0); /* 가로 0배 = 안 보임 */
+  transition: transform 0.3s; /* 0.3초 동안 변화 */
+} /* 마우스 올리면 양쪽으로 펼쳐짐 */
+.gnb > li.on > a::after {
+  transform: scaleX(1); /* 가로 1배 = 원래 길이 */
+}
+
+/* 하위 메뉴 (흰색 패널) */
+.sub {
+  display: none;
+  position: absolute;
+  top: 100%; /* 헤더 바로 아래 */
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  color: #222;
+}
+.gnb > li.on .sub {
+  display: block; /* 바로 나타남 */
+}
+.sub-inner {
+  display: flex;
+  padding: 40px 0 0 220px;
+}
+.sub-inner h2 {
+  width: 205px;
+  padding-right: 80px;
+  text-align: right;
+  font-size: 32px;
+  line-height: 1;
+}
+
+/* 4칸 격자 + 세로 구분선 */
+.sub-cols {
+  display: grid;
+  grid-template-columns: repeat(4, 238px);
+  padding-bottom: 40px;
+  /* 238px마다 1px 회색 선을 반복해서 그려 세로선을 만듦 */
+  background: repeating-linear-gradient(
+    to right,
+    #ddd 0 1px,
+    transparent 1px 238px
+  );
+}
+.group {
+  padding: 0 20px 34px;
+}
+.group h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+.group a {
+  display: block;
+}
+.group ul a {
+  font-size: 16px;
+  line-height: 35px;
+  color: #555;
+}
+.group ul a::before {
+  content: "- ";
+}
+.group a:hover {
+  color: #e0283d;
+}
+
+/* 새 창 아이콘 있는 링크 */
+.group .ext {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.group .ext i {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 오른쪽 아이콘 */
+.util {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.btn-search {
+  font-size: 20px;
+}
+.btn-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.btn-menu span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor; /* 글자색 따라감 → 흰 헤더일 때 자동으로 어두워짐 */
+}
+
+/* ===== 메인 비주얼 ===== */
+#visual {
+  position: relative;
+  height: 100vh; /* 화면 높이만큼 */
+  overflow: hidden; /* 확대된 이미지가 밖으로 안 나가게 */
+  color: #fff;
+  z-index: 20;
+}
+/* 비주얼 위에 덮을 검은 막 (평소엔 투명) */
+#visual::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  z-index: 20; /* 문구, 버튼보다 위 */
+  pointer-events: none; /* 막이 클릭을 가로채지 않게 */
+  transition: opacity 1s;
+}
+
+/* 헤더에 커서를 올리면 막이 나타남 */
+header.on ~ #visual::after {
+  opacity: 1;
+}
+/* 이미지 3장 겹치기 */
+/* 이미지: 1.5초 동안 서서히 나타남 */
+.slides img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+  opacity: 0;
+  transition: opacity 1.5s;
+}
+/* 3초 동안 천천히 확대 → 그 상태로 고정 (forwards) */
+.slides img.on {
+  opacity: 1;
+  animation: zoom 3s ease-out forwards;
+}
+.slides img.off {
+  transform: scale(1.1); /* 사라지는 동안 확대된 크기 유지 */
+}
+@keyframes zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+/* 큰 문구 */
+#visual h2 {
+  position: absolute;
+  top: 170px;
+  right: 100px;
+  text-align: right;
+  font-size: 60px;
+  line-height: 1.4;
+}
+
+.btn-pause {
+  width: 20px;
+  height: 20px;
+}
+/* 두 아이콘을 같은 자리에 겹침 */
+.btn-pause i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition:
+    opacity 0.4s,
+    transform 0.4s;
+}
+
+/* 기본(재생 중): 정지 아이콘 보임, 재생 아이콘 숨김 */
+.icon-pause {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+.icon-play {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(0.5);
+}
+
+/* 멈춤 상태: 반대로 */
+#visual.paused .icon-pause {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scale(0.5);
+}
+#visual.paused .icon-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+
+/* 선 위 탭 */
+.tabs {
+  position: absolute;
+  top: 500px;
+  left: 100px;
+  display: flex;
+  gap: 40px;
+}
+.tabs a {
+  position: relative;
+  font-size: 17px;
+  opacity: 0.6; /* 선택 안 된 탭은 흐리게 */
+  transition: opacity 0.3s;
+}
+.tabs li.on a {
+  opacity: 1;
+}
+/* 빨간 점 */
+.tabs li.on a::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e0283d;
+}
+
+/* 선 아래 링크 목록 */
+.quick-wrap {
+  position: absolute;
+  top: 600px;
+  left: 100px;
+  right: 100px;
+}
+.quick {
+  display: none;
+}
+.quick.on {
+  display: flex;
+}
+.quick li {
+  flex: 1; /* 개수와 상관없이 똑같이 나눠 가짐 */
+}
+.quick a {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 130px;
+  overflow: hidden; /* 아래에 숨겨둔 원이 안 보이게 */
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* 커서 올리면 아래에서 올라오는 흰 원 */
+.quick .circle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  /* background: #fff; */
+  transform: translate(-50%, 100%); /* 평소엔 아래로 내려가 숨어 있음 */
+  transition: transform 0.4s;
+  overflow: hidden;
+}
+.quick a:hover .circle {
+  transform: translate(-50%, 0); /* 제자리로 올라옴 */
+}
+.quick .circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 비율 유지하면서 원을 꽉 채움 */
+}
+
+/* 얇은 흰 선 + 굵은 진행 선 */
+.line {
+  position: absolute;
+  top: 550px;
+  left: 100px;
+  right: 100px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.progress {
+  position: absolute;
+  top: -1px; /* 얇은 선 위로 겹치게 */
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left; /* 왼쪽에서 오른쪽으로 */
+}
+/* 진행 선: 0.8초 만에 끝까지 → 그 상태로 정지 */
+.progress.run {
+  animation: progress 0.8s ease-out forwards;
+}
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+/* 멈춤 버튼: 다른 요소에 가려지지 않게 맨 위로 */
+.btn-pause {
+  position: absolute;
+  top: 425px;
+  right: 100px;
+  z-index: 10;
+  background: none;
+  border: 0;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+/* 멈춤 상태: 확대와 진행 선을 그 자리에서 정지 */
+#visual.paused .slides img.on,
+#visual.paused .progress {
+  animation-play-state: paused;
+}
+
+/* ===== 알림마당 (con01) ===== */
+#con01 {
+  display: flex;
+  justify-content: space-between;
+  padding: 130px 96px 100px;
+}
+
+/* 왼쪽 제목 */
+.con01-title {
+  width: 15vw;
+  opacity: 0;
+  transform: translateY(-60px);
+  transition:
+    opacity 1s,
+    transform 1s;
+}
+.con01-title h2 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: 1000;
+}
+.con01-title h2 span {
+  width: 140px;
+  height: 1px;
+  background: #333; /* 옆에 그어진 가로선 */
+}
+.con01-title h3 {
+  margin-top: 30px;
+  font-size: 38px;
+  line-height: 1.4;
+  color: #222;
+}
+.con01-title h3 span {
+  color: #888; /* 첫 줄만 회색 */
+}
+
+/* 오른쪽 영역: 화면 너비의 약 60% (원본과 같은 비율) */
+.con01-right {
+  width: 59.5vw;
+  opacity: 0;
+  transform: translateY(60px);
+  transition:
+    opacity 1s 0.2s,
+    transform 1s 0.2s; /* 0.2초 늦게 시작 → 왼쪽 다음에 */
+}
+/* 화면에 들어오면 제자리로 */
+#con01.show .con01-title,
+#con01.show .con01-right {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* 카드 2열 격자 */
+.news {
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    minmax(0, 1fr)
+  ); /* 내용물이 길어도 칸이 안 늘어나게 */
+  gap: 8px;
+}
+.news li {
+  min-width: 0; /* 칸 안에서도 한 번 더 막기 */
+}
+/* 왼쪽 열(1, 3번째)만 40px 아래로 → 지그재그 */
+.news li:nth-child(odd) {
+  transform: translateY(40px);
+}
+.news li a {
+  display: block;
+  height: 286px;
+  padding: 40px;
+  border-radius: 10px;
+  background: #f6f6f6;
+  transition:
+    background 0.8s,
+    box-shadow 0.8s;
+}
+/* 마우스 올리면 흰 배경 + 그림자 (배너 제외) */
+.news li:not(.banner) a:hover {
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+/* 분류 + 플러스 아이콘 */
+.news .cate {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  font-size: 16px;
+  color: #e0283d;
+}
+
+/* 제목: 2줄 넘으면 ... */
+.news h3 {
+  height: 68px; /* 22px × 1.55 × 2줄 */
+  margin-bottom: 22px;
+  font-size: 22px;
+  line-height: 1.55;
+  color: #222;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 2줄까지만 */
+  line-clamp: 2; /* 표준 이름 (경고 제거용) */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 요약: 1줄 넘으면 ... */
+.news p {
+  margin-bottom: 34px;
+  font-size: 15px;
+  color: #666;
+  white-space: nowrap; /* 줄바꿈 금지 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 넘치는 부분 ... */
+}
+.news .date {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 배너 슬라이더 */
+.news .banner {
+  overflow: hidden; /* 옆 배너 숨기기 */
+  border-radius: 5px;
+  isolation: isolate; /* transform 된 자식도 둥근 모서리로 잘리게 */
+}
+.banner-track {
+  display: flex; /* 배너 3장을 가로로 나란히 */
+  transition: transform 0.5s;
+  cursor: grab;
+  user-select: none; /* 끌 때 글자/이미지 선택 방지 */
+}
+.banner-track a:nth-child(2) {
+  background: #0a1a6e;
+} /* 두 번째 배너 (남색) */
+.banner-track:active {
+  cursor: grabbing;
+}
+.news .banner a {
+  flex: 0 0 100%;
+  display: flex;
+  align-items: center; /* 사진을 세로 가운데로 */
+  padding: 0;
+  background: none;
+}
+.banner img {
+  display: block;
+  width: 100%;
+  height: auto; /* 원본 비율 그대로 → 상자 = 사진 */
+  border-radius: 10px; /* 이제 사진 모서리가 둥글어짐 */
+  -webkit-user-drag: none;
+}
+
+/* 오른쪽 아래 내비게이션 */
+.news-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.news-nav button {
+  border: 0;
+  background: none;
+  color: #333;
+  cursor: pointer;
+}
+.btn-prev,
+.btn-next {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc !important;
+  border-radius: 50%;
+  background: #fff !important;
+  font-size: 13px;
+}
+/* 끝에 도달한 버튼: 회색 + 클릭 불가 */
+.news-nav button.disabled {
+  border-color: #e5e5e5 !important;
+  background: #e5e5e5 !important;
+  color: #aaa;
+  cursor: default;
+}
+.count {
+  font-size: 17px;
+  color: #555;
+}
+.count .now {
+  color: #e0283d;
+  transition: 0.5s;
+}
+.btn-stop {
+  position: relative; /* 아이콘 겹치는 기준 */
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+}
+/* 두 아이콘을 같은 자리에 겹침 */
+.btn-stop i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition:
+    opacity 0.5s,
+    transform 0.5s; /* 아이콘 자체에 transition */
+}
+
+/* 평소: 멈춤 아이콘 보임, 재생 아이콘 숨김 */
+.btn-stop .icon-stop {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+.btn-stop .icon-go {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(0.5);
+}
+
+/* 멈춘 상태: 반대로 */
+.news-nav.paused .icon-stop {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scale(0.5);
+}
+.news-nav.paused .icon-go {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+/* 맨 위로 버튼 */
+.btn-top {
+  position: fixed;
+  right: 20px;
+  bottom: 40px;
+  z-index: 10; /* 비주얼(20)보다 아래 → 비주얼에 가려짐 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #6e6e6e;
+  color: #fff;
+  font-size: 20px;
+  opacity: 0; /* 비주얼 아래에선 투명 */
+  transition: opacity 0.4s;
+}
+.btn-top.show {
+  opacity: 1;
+}
+
+/* ===== 주요사업 (con02) ===== */
+#con02 {
+  padding: 80px 96px 90px;
+  background: #f8f8f8;
+}
+
+/* 제목 (con01 제목과 같은 모양) */
+.con02-title h2 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: 3000;
+}
+.con02-title h2 span {
+  width: 140px;
+  height: 1px;
+  background: #333;
+}
+.con02-title h3 {
+  margin-top: 30px;
+  font-size: 40px;
+  line-height: 1.5;
+  color: #222;
+}
+
+/* 패널 영역 */
+.biz {
+  display: flex;
+  gap: 8px;
+  height: 440px;
+  margin-top: 70px;
+}
+.biz li {
+  position: relative;
+  flex-shrink: 0; /* 줄어들지 않게 */
+  width: 126px; /* 접힌 상태 */
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: width 0.8s; /* 폭이 바뀌는 li에 transition */
+}
+.biz li.on {
+  /* 전체 - (접힌 패널 126px × 3) - (간격 8px × 3) */
+  width: calc(100% - 402px);
+  cursor: default;
+}
+/* 배경 두 겹: 패널을 꽉 채움 (.bg-s / .bg-l 따로 만든 규칙은 삭제) */
+.biz .bg {
+  position: absolute;
+  inset: 0;
+  background: no-repeat center / cover;
+  /* transition: opacity 0.8s; */
+}
+.biz .bg-l {
+  opacity: 0;
+}
+.biz li.on .bg-l {
+  opacity: 1;
+}
+
+/* ↓ 이미지 파일 연결 nth-child 8줄은 그대로 ↓ */
+/* 사진 위 어두운 막 */
+.biz li::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* 배경(0)보다 위 */
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* 접혔을 때 세로 제목 */
+.biz .v-title {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  z-index: 2; /* 어두운 막(1)보다 위 */
+  transform: translateX(-50%);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 26px;
+  color: #fff;
+  transition: opacity 0.4s 0.6s; /* 다시 접힐 땐 거의 다 접힌 뒤 나타남 */
+}
+.biz li.on .v-title {
+  opacity: 0;
+  transition: none; /* 클릭하면 기다리지 않고 바로 사라짐 */
+}
+
+/* 이미지 파일 (줄임 속성 말고 background-image로!) */
+.biz li:nth-child(1) .bg-s {
+  background-image: url(../img/con02_4.jpg);
+}
+.biz li:nth-child(1) .bg-l {
+  background-image: url(../img/con02_04.jpg);
+}
+.biz li:nth-child(2) .bg-s {
+  background-image: url(../img/con02_3.jpg);
+}
+.biz li:nth-child(2) .bg-l {
+  background-image: url(../img/con02_03.jpg);
+}
+.biz li:nth-child(3) .bg-s {
+  background-image: url(../img/con02_2.jpg);
+}
+.biz li:nth-child(3) .bg-l {
+  background-image: url(../img/con02_02.jpg);
+}
+.biz li:nth-child(4) .bg-s {
+  background-image: url(../img/con02_1.jpg);
+}
+.biz li:nth-child(4) .bg-l {
+  background-image: url(../img/con02_01.jpg);
+}
+
+/* 사진 위 어두운 막 (글자 잘 보이게) */
+.biz li::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* top/right/bottom/left 모두 0 */
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* 접혔을 때 세로 제목 */
+.biz .v-title {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  writing-mode: vertical-rl; /* 세로쓰기 */
+  text-orientation: upright; /* 글자는 똑바로 */
+  font-size: 26px;
+  color: #fff;
+  transition: opacity 0.4s;
+}
+.biz li.on .v-title {
+  opacity: 0; /* 펼치면 세로 제목 사라짐 */
+}
+
+/* 펼쳤을 때 내용: 아래에 숨어 있다가 올라옴 */
+.biz .txt {
+  position: absolute;
+  top: 140px;
+  left: 80px;
+  z-index: 2;
+  color: #fff;
+  white-space: nowrap; /* 펼쳐지는 동안 줄바꿈으로 흔들리지 않게 */
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.6s,
+    transform 0.6s;
+}
+.biz li.on .txt {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.5s; /* 패널이 펼쳐진 뒤에 나타남 */
+}
+.biz .txt h4 {
+  font-size: 32px;
+}
+.biz .txt p {
+  margin-top: 18px;
+  font-size: 17px;
+}
+.biz .btn-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  margin-top: 36px;
+  border-radius: 50%;
+  background: #e0283d;
+  font-size: 20px;
+}
+/* ===== 주요사업 스크롤 효과 ===== */
+/* 제목: 위에 숨어 있다가 내려옴 */
+.con02-title {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition:
+    opacity 1s,
+    transform 1s;
+}
+/* 패널: 아래에 숨어 있다가 올라옴 */
+.biz {
+  opacity: 0;
+  transform: translateY(60px);
+  transition:
+    opacity 1s 0.2s,
+    transform 1s 0.2s; /* 제목 다음에 */
+}
+
+/* 화면에 들어오면 제자리로 */
+#con02.show .con02-title,
+#con02.show .biz {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== 공사참여 (con03) ===== */
+#con03 {
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 604px; /* 왼쪽 제목 | 오른쪽 박스 영역 */
+  row-gap: 8px;
+  padding: 148px 168px 112px;
+  background: url(../img/con03_bg.jpg) no-repeat center / cover; /* 파일명은 본인 것으로 */
+  color: #fff;
+  margin: 300px auto;
+}
+
+/* 왼쪽 제목: 두 줄(카드 + 작은 박스)을 세로로 차지 */
+.con03-title {
+  grid-row: 1 / 3;
+}
+.con03-title h2 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 18px;
+}
+.con03-title h2 span {
+  width: 140px;
+  height: 1px;
+  background: #fff;
+}
+.con03-title h3 {
+  margin-top: 30px;
+  font-size: 38px;
+  line-height: 1.5;
+}
+
+/* 알약 모양 버튼 */
+.con03-links {
+  margin-top: 66px;
+}
+.con03-links li + li {
+  margin-top: 20px;
+}
+.con03-links a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 206px;
+  height: 58px;
+  padding: 0 20px;
+  border: 1px solid #fff;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: 700;
+  transition: 1s;
+}
+
+/* 오른쪽 큰 카드 2열 */
+.con03-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.con03-card {
+  display: flex;
+  flex-direction: column; /* 링크를 아래로 밀기 위해 */
+  height: 392px;
+  padding: 40px;
+}
+.con03-card h4 {
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.con03-card h4 span {
+  display: block;
+  margin-top: 12px;
+  font-size: 20px;
+}
+.con03-card p {
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.card-links {
+  margin-top: auto; /* 남은 공간을 다 밀어서 카드 맨 아래로 */
+}
+.card-links a {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 18px;
+  font-weight: 700;
+}
+.card-links a + a {
+  margin-top: 20px;
+}
+.con03-links a:hover {
+  background: #4a63ad;
+  border-color: transparent;
+}
+
+/* 작은 박스 2×2 */
+.con03-quick {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.con03-quick a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 82px;
+  padding: 0 20px;
+}
+.con03-quick h6 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+.con03-quick i {
+  font-size: 28px;
+  opacity: 0.7;
+}
+/* 공통: 반투명 + 블러 박스 */
+.con03-card,
+.con03-quick a {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(16px); /* 사파리용 */
+  backdrop-filter: blur(16px); /* 뒤 배경을 흐리게 */
+  opacity: 0;
+  transform: translateY(60px); /* 아래에 숨어 있다가 올라옴 */
+  transition:
+    background 1s,
+    opacity 1s 0.2s,
+    transform 1s 0.2s; /* 제목 다음에 */
+}
+/* 임시 hover: 색이 차오르며 불투명해짐 (나중에 제이쿼리로 교체) */
+.con03-card:hover,
+.con03-quick a:hover {
+  background: #4a63ad;
+}
+/* ===== 공사참여 스크롤 효과 ===== */
+/* 제목: 위에 숨어 있다가 내려옴 */
+.con03-title {
+  opacity: 0;
+  transform: translateY(-60px);
+  transition:
+    opacity 1s,
+    transform 1s;
+}
+
+/* 화면에 들어오면 제자리로 */
+#con03.show .con03-title,
+#con03.show .con03-card,
+#con03.show .con03-quick a {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* ===== 관련사이트 (con04) ===== */
+#con04 {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 130px;
+  padding: 0 96px;
+  background: #47547a;
+  color: #fff;
+}
+#con04 h2 {
+  flex-shrink: 0; /* 목록이 길어도 줄어들지 않게 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  color: #f5a20a;
+}
+
+/* 목록 창: 남는 공간을 다 차지하고, 넘치면 숨김 */
+.site-wrap {
+  flex: 1;
+  min-width: 0; /* flex 안에서 내용물 때문에 늘어나는 것 방지 */
+  overflow: hidden;
+  /* 오른쪽 끝을 흐리게 사라지게 */
+  -webkit-mask-image: linear-gradient(to right, #000 92%, transparent);
+  mask-image: linear-gradient(to right, #000 92%, transparent);
+}
+.site-track {
+  position: relative; /* 항목 위치(offsetLeft)를 재는 기준 */
+  display: flex;
+  transition: transform 0.5s;
+  cursor: grab;
+  user-select: none; /* 끌 때 글자 선택 방지 */
+}
+.site-track:active {
+  cursor: grabbing;
+}
+/* 끝에 닿은 버튼: 흐리게 + 클릭 불가 */
+.site-nav button.disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.site-track li {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap; /* 사이트 이름 줄바꿈 금지 */
+}
+.site-track a {
+  font-size: 20px;
+  font-weight: 700;
+}
+/* 이름 뒤 작은 동그라미 */
+.site-track li::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+/* 오른쪽 버튼 */
+.site-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: 0.5s;
+}
+.site-nav button {
+  border: 0;
+  background: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+/* 멈춤/재생 버튼: 두 아이콘을 같은 자리에 겹침 */
+.site-stop {
+  position: relative;
+  width: 22px;
+  height: 22px;
+}
+.site-stop i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+/* 평소: 멈춤 아이콘 보임, 재생 아이콘 숨김 */
+.site-stop .icon-stop {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+.site-stop .icon-go {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg) scale(0.5);
+}
+
+/* 멈춘 상태: 반대로 */
+.site-nav.paused .icon-stop {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scale(0.5);
+}
+.site-nav.paused .icon-go {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+/* ===== 푸터 ===== */
+footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 64px 100px 60px;
+  color: #555;
+}
+.ft-logo img {
+  display: block;
+  height: 48px;
+}
+footer address {
+  margin-top: 26px;
+  font-size: 15px;
+  font-style: normal; /* address 기본 기울임 없애기 */
+}
+footer address span {
+  margin: 0 6px;
+  color: #bbb;
+}
+.ft-links {
+  display: flex;
+  gap: 28px;
+  margin-top: 24px;
+}
+.ft-links a {
+  font-size: 16px;
+  color: #333;
+}
+.ft-links .point {
+  color: #e0283d;
+  font-weight: 700;
+  text-decoration: underline;
+}
+.copy {
+  margin-top: 22px;
+  font-size: 15px;
+  color: #666;
+}
+
+/* 오른쪽: 패밀리사이트 + 인증마크 */
+.ft-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+}
+.family {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 220px;
+  padding-bottom: 12px;
+  border: 0;
+  border-bottom: 2px solid #333; /* 밑줄만 */
+  background: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  cursor: pointer;
+}
+.wa {
+  width: 90px;
+}
+
+/* =========================================================
+   태블릿 (1280px 이하)
+   → index.css 맨 아래에 그대로 붙여넣기
+   ========================================================= */
+@media (max-width: 1280px) {
+  /* ===== 헤더 ===== */
+  header {
+    height: 80px;
+    padding: 0 85px;
+  }
+  /* 큰 메뉴는 숨기고 검색 + 햄버거만 (햄버거 기능은 나중에 제이쿼리로) */
+  .gnb {
+    display: none;
+  }
+  .util {
+    gap: 32px;
+  }
+  .btn-search {
+    font-size: 22px;
+  }
+
+  /* ===== 메인 비주얼 ===== */
+  #visual h2 {
+    top: 230px;
+    right: 85px;
+    font-size: 52px;
+    line-height: 1.3;
+    /* white-space: nowrap; */
+  }
+  .btn-pause {
+    top: 370px;
+    right: 85px;
+  }
+  .tabs {
+    top: 405px;
+    left: 85px;
+  }
+  .line {
+    top: 453px;
+    left: 85px;
+    right: 85px;
+  }
+  .quick-wrap {
+    top: 472px;
+    left: 85px;
+    right: 85px;
+  }
+  /* 한 줄 나열 → 5칸 격자 (넘치면 다음 줄로) */
+  .quick.on {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  /* 테두리 있는 네모 박스 */
+  .quick a {
+    height: 70px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    font-size: 17px;
+    transition: background 0.3s;
+  }
+  .quick a:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+  /* 태블릿은 마우스 hover가 없으니 올라오는 원은 숨김 */
+  .quick .circle {
+    display: none;
+  }
+
+  /* ===== 알림마당 (con01) ===== */
+  /* 좌우 배치 → 위아래 배치 */
+  #con01 {
+    flex-direction: column;
+    gap: 60px;
+    padding: 100px 85px 80px;
+  }
+  .con01-title,
+  .con01-right {
+    width: 100%; /* vw로 줬던 폭 풀기 */
+  }
+  .con01-title h3 {
+    font-size: 34px;
+  }
+  .news li a {
+    height: 260px;
+    padding: 32px;
+  }
+  .news h3 {
+    height: 62px; /* 20px × 1.55 × 2줄 */
+    font-size: 20px;
+  }
+
+  /* ===== 주요사업 (con02) ===== */
+  #con02 {
+    padding: 80px 85px;
+  }
+  .con02-title h3 {
+    font-size: 34px;
+  }
+  .biz {
+    height: 380px;
+    margin-top: 50px;
+  }
+  .biz li {
+    width: 90px; /* 접힌 패널 폭 줄이기 */
+  }
+  .biz li.on {
+    /* 전체 - (접힌 패널 90px × 3) - (간격 8px × 3) */
+    width: calc(100% - 294px);
+  }
+  .biz .v-title {
+    top: 40px;
+    font-size: 22px;
+  }
+  /* 펼친 패널 글자: 화면이 좁아서 줄바꿈 허용.
+     대신 폭을 '다 펼쳐졌을 때 폭'으로 고정해서 펼쳐지는 동안 흔들리지 않게
+     (100vw - 좌우여백 170 - 접힌패널 294 - 글자 좌우여백 80) */
+  .biz .txt {
+    top: 100px;
+    left: 40px;
+    width: calc(100vw - 544px);
+    white-space: normal;
+  }
+  .biz .txt h4 {
+    font-size: 28px;
+  }
+  .biz .txt p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ===== 공사참여 (con03) ===== */
+  /* 배경은 화면 끝까지 꽉, 내용은 안쪽 여백으로 가운데 */
+  #con03 {
+    width: 100%;
+    grid-template-columns: 1fr; /* 2열(제목 | 박스) → 1열 */
+    padding: 70px 11.5% 60px; /* 좌우 % → 화면 폭 따라 여백도 같이 줄어듦 */
+    margin: 120px 0;
+  }
+
+  /* 제목 영역: 왼쪽 글자 | 오른쪽 알약 버튼 */
+  .con03-title {
+    grid-row: auto; /* 두 줄 차지하던 것 풀기 */
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin-bottom: 30px;
+  }
+  .con03-title h2,
+  .con03-title h3 {
+    grid-column: 1; /* 왼쪽 칸 */
+  }
+  .con03-links {
+    grid-column: 2; /* 오른쪽 칸 */
+    grid-row: 1 / 3; /* h2 + h3 두 줄 높이를 차지 */
+    margin-top: 15px;
+  }
+
+  /* 카드: 반투명 블러 → 파란 박스 */
+  .con03-card,
+  .con03-quick a {
+    background: #4a63ad;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .con03-card {
+    height: 322px;
+  }
+  /* (Clean KTO)를 줄바꿈 없이 옆에 작게 */
+  .con03-card h4 span {
+    display: inline;
+    margin-top: 0;
+    font-size: 20px;
+  }
+  .con03-card p {
+    line-height: 1.6;
+  }
+
+  /* ===== 관련사이트 (con04) ===== */
+  /* 한 줄 flex → 2칸 grid
+     1줄: 제목 | 버튼
+     2줄: 사이트 목록 (두 칸 다 차지) */
+  #con04 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    row-gap: 22px;
+    height: auto; /* 고정 높이 풀기 (두 줄이 되니까) */
+    padding: 40px 85px;
+  }
+  #con04 h2 {
+    grid-row: 1;
+    grid-column: 1;
+  }
+  .site-nav {
+    grid-row: 1; /* HTML에선 맨 뒤지만 1줄 오른쪽으로 */
+    grid-column: 2;
+  }
+  .site-wrap {
+    grid-row: 2;
+    grid-column: 1 / -1; /* 첫 칸부터 끝 칸까지 = 가로 전체 */
+  }
+  .site-track a {
+    font-size: 18px;
+  }
+
+  /* ===== 푸터 ===== */
+  /* 좌우 배치 → 위아래 배치 */
+  footer {
+    flex-direction: column;
+    gap: 40px;
+    padding: 60px 85px;
+  }
+  footer address {
+    line-height: 1.8;
+  }
+  .ft-links {
+    flex-wrap: wrap; /* 링크가 길면 다음 줄로 */
+    gap: 12px 28px;
+  }
+  /* 패밀리사이트 + 인증마크를 가로로 양 끝에 */
+  .ft-right {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* =========================================================
+   모바일 (767px 이하)
+   → 태블릿 블록 '아래'에 있어야 태블릿 값을 다시 덮어씀
+   ========================================================= */
+@media (max-width: 767px) {
+  /* ===== 헤더 ===== */
+  header {
+    height: 60px;
+    padding: 0 20px;
+  }
+  .logo a {
+    font-size: 15px;
+  }
+  .logo img {
+    height: 34px;
+  }
+  .util {
+    gap: 20px;
+  }
+  .btn-search {
+    font-size: 19px;
+  }
+
+  /* ===== 메인 비주얼 ===== */
+  #visual {
+    min-height: 820px; /* 링크 박스 4줄이 다 들어가는 높이 확보 */
+  }
+  #visual h2 {
+    top: 310px;
+    left: 28px;
+    right: 28px;
+    font-size: 5vw; /* 화면 폭에 비례 → 좁은 폰에서도 두 줄 유지 */
+    line-height: 1.45;
+  }
+  /* 멈춤 버튼: 탭 줄 오른쪽 끝 */
+  .btn-pause {
+    top: 443px;
+    right: 28px;
+  }
+  .tabs {
+    top: 440px;
+    left: 28px;
+    gap: 36px;
+  }
+  .tabs a {
+    font-size: 15px;
+  }
+  .line {
+    top: 482px;
+    left: 28px;
+    right: 28px;
+  }
+  .quick-wrap {
+    top: 527px;
+    left: 28px;
+    right: 28px;
+  }
+  /* 5칸 → 2칸 */
+  .quick.on {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .quick a {
+    height: 62px;
+    font-size: 15px;
+  }
+
+  /* ===== 알림마당 (con01) ===== */
+  #con01 {
+    gap: 40px;
+    padding: 60px 20px;
+  }
+  .con01-title h2 span {
+    width: 80px;
+  }
+  .con01-title h3 {
+    margin-top: 20px;
+    font-size: 26px;
+  }
+  /* 2열 → 1열, 지그재그 없애기 */
+  .news {
+    grid-template-columns: 1fr;
+  }
+  .news li:nth-child(odd) {
+    transform: none;
+  }
+  .news li a {
+    height: auto; /* 내용만큼만 */
+    padding: 24px;
+  }
+  .news .cate {
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .news h3 {
+    height: 56px; /* 18px × 1.55 × 2줄 */
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+  .news p {
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  .news-nav {
+    margin-top: 16px;
+  }
+
+  /* ===== 주요사업 (con02) ===== */
+  #con02 {
+    padding: 60px 20px;
+  }
+  .con02-title h2 span {
+    width: 80px;
+  }
+  .con02-title h3 {
+    margin-top: 20px;
+    font-size: 22px;
+  }
+  /* 가로로 펼치기 → 세로로 펼치기 (아코디언) */
+  .biz {
+    flex-direction: column;
+    height: auto;
+    margin-top: 36px;
+  }
+  .biz li,
+  .biz li.on {
+    width: 100%; /* 폭은 항상 꽉 */
+  }
+  .biz li {
+    height: 70px; /* 접힌 상태 */
+    transition: height 0.8s; /* 이제 바뀌는 건 높이 */
+  }
+  .biz li.on {
+    height: 300px; /* 펼친 상태 */
+  }
+  /* 세로쓰기 제목 → 가로 제목, 왼쪽 가운데 */
+  .biz .v-title {
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
+    writing-mode: horizontal-tb;
+    font-size: 18px;
+  }
+  .biz .txt {
+    top: 40px;
+    left: 24px;
+    right: 24px;
+    width: auto; /* 태블릿에서 준 calc 폭 풀기 */
+  }
+  .biz .txt h4 {
+    font-size: 22px;
+  }
+  .biz .txt p {
+    margin-top: 12px;
+    font-size: 15px;
+  }
+  .biz .btn-arrow {
+    width: 44px;
+    height: 44px;
+    margin-top: 24px;
+    font-size: 16px;
+  }
+
+  /* ===== 공사참여 (con03) ===== */
+  #con03 {
+    padding: 60px 20px;
+    margin: 60px 0;
+  }
+  /* 제목 | 버튼 2칸 → 위아래 */
+  .con03-title {
+    display: block;
+  }
+  .con03-title h2 span {
+    width: 80px;
+  }
+  .con03-title h3 {
+    margin-top: 20px;
+    font-size: 26px;
+  }
+  /* 알약 버튼 두 개를 가로로 반반 */
+  .con03-links {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .con03-links li {
+    flex: 1;
+  }
+  .con03-links li + li {
+    margin-top: 0;
+  }
+  .con03-links a {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 15px;
+  }
+  /* 큰 카드 2열 → 1열 */
+  .con03-cards {
+    grid-template-columns: 1fr;
+  }
+  .con03-card {
+    height: auto;
+    padding: 28px 24px;
+  }
+  .con03-card h4 {
+    font-size: 22px;
+  }
+  .con03-card h4 span {
+    font-size: 16px;
+  }
+  .con03-card p {
+    font-size: 15px;
+  }
+  .card-links {
+    margin-top: 30px; /* 높이가 auto라 margin auto 대신 고정값 */
+  }
+  .card-links a {
+    font-size: 16px;
+  }
+  .card-links a + a {
+    margin-top: 14px;
+  }
+  /* 작은 박스는 2×2 그대로, 크기만 줄이기 */
+  .con03-quick a {
+    height: 70px;
+    padding: 0 16px;
+  }
+  .con03-quick h6 {
+    font-size: 14px;
+  }
+  .con03-quick i {
+    font-size: 22px;
+  }
+
+  /* ===== 관련사이트 (con04) ===== */
+  #con04 {
+    row-gap: 16px;
+    padding: 30px 20px;
+  }
+  #con04 h2 {
+    font-size: 15px;
+  }
+  .site-nav {
+    gap: 14px;
+  }
+  .site-nav button {
+    font-size: 20px;
+  }
+  .site-track a {
+    font-size: 16px;
+  }
+  .site-track li::after {
+    margin: 0 12px;
+  }
+
+  /* ===== 푸터 ===== */
+  footer {
+    gap: 30px;
+    padding: 40px 20px;
+  }
+  .ft-logo img {
+    height: 38px;
+  }
+  footer address {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .ft-links {
+    gap: 8px 16px;
+    margin-top: 18px;
+  }
+  .ft-links a {
+    font-size: 14px;
+  }
+  .copy {
+    font-size: 13px;
+  }
+  .family {
+    width: 180px;
+    font-size: 14px;
+  }
+  .wa {
+    width: 70px;
+  }
+
+  /* ===== 맨 위로 버튼 ===== */
+  .btn-top {
+    right: 16px;
+    bottom: 20px;
+    width: 46px;
+    height: 46px;
+    font-size: 17px;
+  }
+}
